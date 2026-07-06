@@ -2334,8 +2334,8 @@
 
     // 后端 API 地址
     // 本地开发时用 window.location.origin（如 http://localhost:3001）
-    // 部署到 GitHub Pages 后，改为你的 Vercel 后端地址（如 https://xxx.vercel.app）
-    const API_BASE = window.location.origin;
+    // 部署到 GitHub Pages 后，连接 Vercel 后端
+    const API_BASE = 'https://study-forest-alpha.vercel.app';
 
     // 更新AI切换按钮的显示状态
     async function updateAIToggleState() {
