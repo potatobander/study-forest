@@ -1,0 +1,3059 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今天学什么？—— 基于番茄专注与森林成长激励的学习陪伴网站</title>
+    <style>
+        /* ===== CSS 变量与重置 ===== */
+        :root {
+            --primary: #4CAF50;
+            --primary-light: #81C784;
+            --primary-dark: #388E3C;
+            --accent: #FF6B6B;
+            --accent-light: #FF8A80;
+            --bg: #F5F9F0;
+            --bg-warm: #FFF8F0;
+            --card-bg: #FFFFFF;
+            --text-primary: #2D3436;
+            --text-secondary: #636E72;
+            --text-light: #B2BEC3;
+            --border: #E0E0E0;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-hover: 0 8px 30px rgba(0,0,0,0.12);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ===== 导航栏 - 毛玻璃效果 ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .nav-logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-logo span {
+            font-size: 24px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .nav-link {
+            padding: 8px 18px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            background: none;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+            background: rgba(76,175,80,0.08);
+        }
+
+        .nav-link.active {
+            color: #fff;
+            background: var(--primary);
+        }
+
+        /* ===== 页面切换系统 ===== */
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding-top: 64px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ===== 首页 - 主视觉区域 ===== */
+        .hero {
+            padding: 80px 0 60px;
+            text-align: center;
+        }
+
+        .hero-emoji {
+            font-size: 64px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            font-weight: 800;
+            line-height: 1.3;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .hero h1 .highlight {
+            color: var(--primary);
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 36px;
+        }
+
+        /* ===== 按钮样式 ===== */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 16px rgba(76,175,80,0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(76,175,80,0.45);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            background: var(--card-bg);
+            color: var(--primary-dark);
+            border: 2px solid var(--primary-light);
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(76,175,80,0.06);
+            border-color: var(--primary);
+        }
+
+        .btn-danger {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            background: var(--card-bg);
+            color: var(--accent);
+            border: 2px solid var(--accent-light);
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-danger:hover {
+            background: rgba(255,107,107,0.06);
+            border-color: var(--accent);
+        }
+
+        /* ===== 首页 - 问题模块 ===== */
+        .problems {
+            padding: 60px 0;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .section-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .problem-card {
+            background: var(--card-bg);
+            padding: 28px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            transition: var(--transition);
+        }
+
+        .problem-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .problem-icon {
+            font-size: 36px;
+            flex-shrink: 0;
+        }
+
+        .problem-card h3 {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .problem-card p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* ===== 首页 - 三步开始模块 ===== */
+        .how-it-works {
+            padding: 60px 0;
+            background: linear-gradient(180deg, var(--bg) 0%, var(--bg-warm) 100%);
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .step-card {
+            background: var(--card-bg);
+            padding: 36px 28px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            margin: 0 auto 16px;
+        }
+
+        .step-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .step-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .step-card p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* ===== 首页 - 快捷入口模块 ===== */
+        .quick-entry {
+            padding: 60px 0;
+        }
+
+        .quick-btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            justify-content: center;
+        }
+
+        .quick-btn {
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid;
+            background: var(--card-bg);
+        }
+
+        .quick-btn.green { color: var(--primary-dark); border-color: var(--primary-light); }
+        .quick-btn.green:hover { background: var(--primary); color: #fff; }
+        .quick-btn.orange { color: #E67E22; border-color: #F0C27B; }
+        .quick-btn.orange:hover { background: #E67E22; color: #fff; }
+        .quick-btn.red { color: var(--accent); border-color: var(--accent-light); }
+        .quick-btn.red:hover { background: var(--accent); color: #fff; }
+        .quick-btn.blue { color: #3498DB; border-color: #85C1E9; }
+        .quick-btn.blue:hover { background: #3498DB; color: #fff; }
+
+        /* ===== 任务页 ===== */
+        .task-section {
+            padding: 60px 0;
+        }
+
+        .form-area {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 40px;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 28px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .option-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .option-btn {
+            padding: 10px 22px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text-secondary);
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .option-btn.selected {
+            border-color: var(--primary);
+            background: rgba(76,175,80,0.08);
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .generate-btn-wrap {
+            text-align: center;
+            margin-top: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* ===== AI/本地切换按钮 ===== */
+        .ai-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text-secondary);
+        }
+
+        .ai-toggle-btn:hover {
+            border-color: var(--primary-light);
+        }
+
+        .ai-toggle-btn.active {
+            border-color: #7C4DFF;
+            background: rgba(124,77,255,0.08);
+            color: #7C4DFF;
+        }
+
+        /* ===== 自定义科目输入框 ===== */
+        .custom-subject-input {
+            margin-top: 12px;
+            display: none;
+        }
+
+        .custom-subject-input.show {
+            display: block;
+        }
+
+        .custom-subject-input input {
+            width: 100%;
+            max-width: 360px;
+            padding: 10px 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            color: var(--text-primary);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .custom-subject-input input:focus {
+            border-color: var(--primary);
+        }
+
+        /* ===== 自定义时长输入框 ===== */
+        .custom-duration-wrap {
+            margin-top: 12px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .custom-duration-wrap.show {
+            display: flex;
+        }
+
+        .custom-duration-wrap input {
+            width: 80px;
+            padding: 8px 12px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 16px;
+            text-align: center;
+            color: var(--text-primary);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .custom-duration-wrap input:focus {
+            border-color: var(--primary);
+        }
+
+        .custom-duration-wrap span {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* ===== 任务结果卡片 ===== */
+        .task-result {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 40px;
+            display: none;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .task-result.show {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .task-result-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .task-result-header .icon {
+            font-size: 32px;
+        }
+
+        .task-result-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .task-source-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        .task-source-tag.ai {
+            background: rgba(124,77,255,0.1);
+            color: #7C4DFF;
+        }
+
+        .task-source-tag.local {
+            background: rgba(76,175,80,0.1);
+            color: var(--primary-dark);
+        }
+
+        .ai-suggestion {
+            background: linear-gradient(135deg, rgba(124,77,255,0.06), rgba(124,77,255,0.02));
+            border-left: 4px solid #7C4DFF;
+            padding: 12px 16px;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #5E35B1;
+            font-style: italic;
+        }
+
+        .task-steps {
+            margin: 20px 0;
+            padding-left: 20px;
+        }
+
+        .task-steps li {
+            font-size: 15px;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .task-meta {
+            display: flex;
+            gap: 20px;
+            padding: 16px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .task-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        /* ===== 番茄钟页 ===== */
+        .timer-section {
+            padding: 60px 0;
+        }
+
+        .timer-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .timer-task-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 28px;
+        }
+
+        .timer-task-card h3 {
+            font-size: 14px;
+            color: var(--text-light);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .timer-task-card .task-title {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .timer-task-card .reward {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: rgba(76,175,80,0.08);
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--primary-dark);
+            font-weight: 500;
+        }
+
+        .timer-center {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 48px 32px;
+            text-align: center;
+        }
+
+        .timer-center h2 {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            font-weight: 500;
+        }
+
+        .timer-display {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 36px;
+        }
+
+        .timer-circle {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            border: 6px solid var(--border);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 倒计时圆圈脉冲动画 - 运行时 */
+        .timer-circle.running {
+            border-color: var(--primary-light);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(76,175,80,0.2); }
+            50% { box-shadow: 0 0 0 15px rgba(76,175,80,0); }
+        }
+
+        .timer-circle.done {
+            border-color: var(--primary);
+        }
+
+        .timer-time {
+            font-size: 52px;
+            font-weight: 800;
+            color: var(--text-primary);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .timer-tips {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 28px;
+        }
+
+        .timer-tips h3 {
+            font-size: 14px;
+            color: var(--text-light);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        .tip-item {
+            font-size: 14px;
+            color: var(--text-secondary);
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+            line-height: 1.6;
+        }
+
+        .tip-item:last-child {
+            border-bottom: none;
+        }
+
+        /* ===== 弹窗系统 ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(6px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 48px;
+            text-align: center;
+            max-width: 460px;
+            width: 90%;
+            animation: scaleIn 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-emoji {
+            font-size: 64px;
+            margin-bottom: 16px;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        .modal h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .modal p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 28px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* 种树动画 */
+        @keyframes treeGrow {
+            0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+            50% { transform: scale(1.3) rotate(5deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .tree-grow-animation {
+            animation: treeGrow 1.2s ease forwards;
+        }
+
+        /* ===== 森林页 ===== */
+        .forest-section {
+            padding: 60px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 24px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* ===== 复习提醒模块 ===== */
+        .review-section {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 4px;
+        }
+
+        .review-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .review-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 24px;
+            height: 24px;
+            padding: 0 6px;
+            border-radius: 12px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .review-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .review-item {
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            margin-bottom: 12px;
+            transition: var(--transition);
+        }
+
+        .review-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .review-item:hover {
+            box-shadow: var(--shadow);
+        }
+
+        .review-item-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .review-item-header .subject-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: rgba(76,175,80,0.1);
+            color: var(--primary-dark);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .review-item-header .task-name {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .review-item-info {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* 遗忘曲线进度条 */
+        .review-progress {
+            margin-bottom: 12px;
+        }
+
+        .review-progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .review-progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .review-progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .review-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .review-btn {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid;
+        }
+
+        .review-btn.start {
+            color: var(--primary-dark);
+            border-color: var(--primary-light);
+            background: rgba(76,175,80,0.06);
+        }
+
+        .review-btn.start:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .review-btn.skip {
+            color: var(--text-secondary);
+            border-color: var(--border);
+            background: var(--card-bg);
+        }
+
+        .review-btn.skip:hover {
+            border-color: var(--text-light);
+        }
+
+        .review-empty {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--text-light);
+            font-size: 15px;
+        }
+
+        /* 遗忘曲线SVG */
+        .forgetting-curve-wrap {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .forgetting-curve-wrap .curve-title {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        /* ===== 格子田森林 ===== */
+        .forest-area {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 40px;
+            margin-bottom: 32px;
+            min-height: 200px;
+        }
+
+        .forest-area h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .forest-area .subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        /* 格子田grid */
+        .farm-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 8px;
+            padding: 20px;
+            background: linear-gradient(135deg, #8B7355 0%, #A0845C 50%, #8B7355 100%);
+            border-radius: 16px;
+            position: relative;
+            min-height: 120px;
+        }
+
+        .farm-cell {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #5D8A3C, #7AB648);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .farm-cell:hover {
+            transform: scale(1.1);
+            z-index: 10;
+        }
+
+        .farm-cell.empty {
+            background: linear-gradient(135deg, #6B8E4E, #8FBC5A);
+            opacity: 0.5;
+            border: 2px dashed rgba(255,255,255,0.3);
+        }
+
+        /* 格子悬浮提示 */
+        .farm-cell .tooltip {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 100;
+            pointer-events: none;
+            margin-bottom: 8px;
+        }
+
+        .farm-cell:hover .tooltip {
+            display: block;
+        }
+
+        /* 种树动画 */
+        @keyframes farmTreeGrow {
+            0% { transform: scale(0) translateY(10px); opacity: 0; }
+            50% { transform: scale(1.2) translateY(-5px); opacity: 1; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .farm-cell.just-planted svg {
+            animation: farmTreeGrow 0.8s ease-out;
+        }
+
+        /* 原有emoji森林兼容隐藏 */
+        .forest-trees {
+            display: none;
+        }
+
+        .tree-item {
+            font-size: 40px;
+            animation: growIn 0.5s ease;
+            transition: var(--transition);
+            cursor: default;
+            position: relative;
+        }
+
+        .tree-item:hover {
+            transform: scale(1.2);
+        }
+
+        @keyframes growIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .tree-empty {
+            font-size: 16px;
+            color: var(--text-light);
+            padding: 30px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .forest-level {
+            margin-top: 20px;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, rgba(76,175,80,0.08), rgba(76,175,80,0.03));
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .forest-level .level-icon {
+            font-size: 28px;
+        }
+
+        .forest-level .level-text {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .history-section {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 32px;
+            margin-bottom: 32px;
+            overflow-x: auto;
+        }
+
+        .history-section h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history-table th {
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .history-table td {
+            padding: 14px 16px;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .history-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .history-table .tree-emoji {
+            font-size: 20px;
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+            font-size: 15px;
+        }
+
+        .encourage-bar {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: var(--radius);
+            padding: 28px 36px;
+            color: #fff;
+            text-align: center;
+        }
+
+        .encourage-bar p {
+            font-size: 17px;
+            font-weight: 500;
+        }
+
+        /* ===== 关于项目页 ===== */
+        .about-section {
+            padding: 60px 0;
+        }
+
+        .about-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 40px;
+            margin-bottom: 24px;
+        }
+
+        .about-card h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .about-card p, .about-card li {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .about-card ul {
+            padding-left: 20px;
+            margin-top: 12px;
+        }
+
+        .about-card li {
+            margin-bottom: 8px;
+        }
+
+        .innovation-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .innovation-item {
+            padding: 20px;
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .innovation-item .icon {
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .innovation-item h4 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .innovation-item p {
+            font-size: 13px;
+        }
+
+        /* ===== 页脚 ===== */
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        /* ===== 无任务状态 ===== */
+        .no-task-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .no-task-state .icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .no-task-state h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .no-task-state p {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        /* ===== 响应式适配 ===== */
+        @media (max-width: 768px) {
+            nav {
+                padding: 0 16px;
+            }
+
+            .nav-links {
+                gap: 4px;
+            }
+
+            .nav-link {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .hero p {
+                font-size: 15px;
+            }
+
+            .problem-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+            .timer-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .form-area, .task-result {
+                padding: 24px;
+            }
+
+            .modal {
+                padding: 32px 24px;
+            }
+
+            .innovation-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding: 50px 0 40px;
+            }
+
+            /* 格子田移动端适配 */
+            .farm-grid {
+                grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+                gap: 6px;
+                padding: 12px;
+            }
+
+            .farm-cell {
+                width: 50px;
+                height: 50px;
+            }
+
+            .farm-cell svg {
+                width: 35px;
+                height: 40px;
+            }
+
+            .farm-cell .tooltip {
+                font-size: 10px;
+                padding: 4px 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-links {
+                display: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .hero h1 {
+                font-size: 24px;
+            }
+
+            .quick-btns {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* ===== 滚动条美化 ===== */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== 导航栏 ===== -->
+<nav>
+    <div class="nav-logo" onclick="navigateTo('home')">
+        <span>🌳</span> 今天学什么？
+    </div>
+    <div class="nav-links">
+        <button class="nav-link active" data-page="home" onclick="navigateTo('home')">首页</button>
+        <button class="nav-link" data-page="task" onclick="navigateTo('task')">生成任务</button>
+        <button class="nav-link" data-page="timer" onclick="navigateTo('timer')">番茄钟</button>
+        <button class="nav-link" data-page="forest" onclick="navigateTo('forest')">我的森林</button>
+        <button class="nav-link" data-page="about" onclick="navigateTo('about')">关于项目</button>
+    </div>
+</nav>
+
+<!-- ===== 首页 (page-home) ===== -->
+<div class="page active" id="page-home">
+    <div class="container">
+        <!-- 主视觉区域 -->
+        <div class="hero">
+            <div class="hero-emoji">🌱</div>
+            <h1>今天不知道<span class="highlight">学什么</span>？<br>先完成一个小任务，种下一棵树。</h1>
+            <p>用随机任务降低开始难度，用番茄钟保持专注，用森林记录你的每一次努力。</p>
+            <button class="btn-primary" onclick="navigateTo('task')">🌿 开始今日学习</button>
+        </div>
+
+        <!-- 问题模块 -->
+        <div class="problems">
+            <h2 class="section-title">为什么需要"今天学什么"？</h2>
+            <p class="section-subtitle">我们发现了大学生学习中的四个常见困境</p>
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="problem-icon">😰</div>
+                    <div>
+                        <h3>不知道从哪里开始</h3>
+                        <p>复习任务太大，面对厚厚的教材不知如何下手</p>
+                    </div>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">📱</div>
+                    <div>
+                        <h3>专注时间太短</h3>
+                        <p>学几分钟就想刷手机，容易被外界打断</p>
+                    </div>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">📝</div>
+                    <div>
+                        <h3>计划总赶不上变化</h3>
+                        <p>学习计划太理想化，执行起来困难重重</p>
+                    </div>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">😩</div>
+                    <div>
+                        <h3>缺少成就反馈</h3>
+                        <p>学完之后感觉什么都没积累，难以持续坚持</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 三步开始模块 -->
+        <div class="how-it-works">
+            <h2 class="section-title">三步开始你的专注学习</h2>
+            <p class="section-subtitle">简单、有趣、有效</p>
+            <div class="steps">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">🎲</div>
+                    <h3>生成小任务</h3>
+                    <p>根据你的状态和时间，推荐一个能马上开始的学习任务</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">🍅</div>
+                    <h3>开启番茄钟</h3>
+                    <p>用 5/15/25/50 分钟完成一次沉浸式专注学习</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">🌳</div>
+                    <h3>种下学习树</h3>
+                    <p>完成一次任务，你的森林就多一棵树，成就感满满</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 快捷入口模块 -->
+        <div class="quick-entry">
+            <h2 class="section-title">你现在什么状态？</h2>
+            <p class="section-subtitle">点击快速进入，不用纠结太久</p>
+            <div class="quick-btns">
+                <button class="quick-btn green" onclick="quickStart('状态很好', '标准', '50')">😊 状态很好，想认真学</button>
+                <button class="quick-btn orange" onclick="quickStart('一般', '标准', '25')">😐 一般般，正常学就行</button>
+                <button class="quick-btn red" onclick="quickStart('焦虑', '轻启动', '15')">😰 有点焦虑，需要明确任务</button>
+                <button class="quick-btn blue" onclick="quickStart('完全不想学', '轻启动', '5')">😴 完全不想学，只想最低难度</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>今天学什么？ —— 让每一次专注都有痕迹 🌱</footer>
+</div>
+
+<!-- ===== 任务页 (page-task) ===== -->
+<div class="page" id="page-task">
+    <div class="container">
+        <div class="task-section">
+            <h2 class="section-title">生成你的今日学习任务</h2>
+            <p class="section-subtitle">不用想太多，先从一个小任务开始</p>
+
+            <div class="form-area">
+                <!-- 学习科目 -->
+                <div class="form-group">
+                    <label>📚 今天学什么科目？</label>
+                    <div class="option-group" data-key="subject">
+                        <button class="option-btn" data-value="英语">英语</button>
+                        <button class="option-btn" data-value="数学">数学 / 计算类</button>
+                        <button class="option-btn" data-value="专业课">专业课</button>
+                        <button class="option-btn" data-value="背诵课">背诵课</button>
+                        <button class="option-btn" data-value="自定义">自定义科目</button>
+                    </div>
+                    <!-- 自定义科目输入框 -->
+                    <div class="custom-subject-input" id="customSubjectInput">
+                        <input type="text" id="customSubjectName" placeholder="请输入自定义科目名称，如：物理、政治、化学...">
+                    </div>
+                </div>
+
+                <!-- 当前状态 -->
+                <div class="form-group">
+                    <label>💫 你现在的状态如何？</label>
+                    <div class="option-group" data-key="status">
+                        <button class="option-btn" data-value="状态很好">状态很好，可以多学一点</button>
+                        <button class="option-btn" data-value="一般">一般般，想正常学</button>
+                        <button class="option-btn" data-value="焦虑">有点焦虑，需要明确任务</button>
+                        <button class="option-btn" data-value="完全不想学">完全不想学，只想最低难度开始</button>
+                    </div>
+                </div>
+
+                <!-- 学习时间 -->
+                <div class="form-group">
+                    <label>⏱️ 准备学多久？</label>
+                    <div class="option-group" data-key="duration">
+                        <button class="option-btn" data-value="5">5 分钟</button>
+                        <button class="option-btn" data-value="15">15 分钟</button>
+                        <button class="option-btn" data-value="25">25 分钟</button>
+                        <button class="option-btn" data-value="50">50 分钟</button>
+                        <button class="option-btn" data-value="自定义">自定义</button>
+                    </div>
+                    <!-- 自定义时长输入框 -->
+                    <div class="custom-duration-wrap" id="customDurationInput">
+                        <input type="number" id="customDuration" min="1" max="120" value="25">
+                        <span>分钟</span>
+                    </div>
+                </div>
+
+                <!-- 任务类型 -->
+                <div class="form-group">
+                    <label>📖 想做什么类型的学习？</label>
+                    <div class="option-group" data-key="taskType">
+                        <button class="option-btn" data-value="看书/PPT">看书 / PPT</button>
+                        <button class="option-btn" data-value="背诵">背诵</button>
+                        <button class="option-btn" data-value="刷题">刷题</button>
+                        <button class="option-btn" data-value="整理笔记">整理笔记</button>
+                        <button class="option-btn" data-value="复盘错题">复盘错题</button>
+                    </div>
+                </div>
+
+                <div class="generate-btn-wrap">
+                    <button class="ai-toggle-btn active" id="aiToggleBtn" onclick="toggleAIMode()">
+                        🤖 AI 生成
+                    </button>
+                    <button class="btn-primary" id="generateBtn" onclick="generateTask()">🎲 生成任务</button>
+                </div>
+            </div>
+
+            <!-- 任务结果卡片 -->
+            <div class="task-result" id="taskResult">
+                <!-- 来源标签 -->
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                    <div class="task-source-tag local" id="taskSourceTag">📚 智能推荐</div>
+                </div>
+                <!-- AI建议 -->
+                <div class="ai-suggestion" id="aiSuggestion" style="display:none;"></div>
+                <div class="task-result-header">
+                    <div class="icon">📋</div>
+                    <h2 id="taskTitle">今日任务</h2>
+                </div>
+                <ol class="task-steps" id="taskSteps"></ol>
+                <div class="task-meta">
+                    <div class="task-meta-item">
+                        <span>📊</span> 难度：<strong id="taskDifficulty">标准</strong>
+                    </div>
+                    <div class="task-meta-item">
+                        <span>⏱️</span> 预计：<strong id="taskDuration">25 分钟</strong>
+                    </div>
+                    <div class="task-meta-item">
+                        <span>🎁</span> 奖励：<strong id="taskReward">小树苗 x1</strong>
+                    </div>
+                </div>
+                <div class="task-actions">
+                    <button class="btn-primary" onclick="startTimer()">🍅 开始番茄钟</button>
+                    <button class="btn-secondary" onclick="simplifyTask()">😅 太难了，换个简单点的</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>今天学什么？ —— 让每一次专注都有痕迹 🌱</footer>
+</div>
+
+<!-- ===== 番茄钟页 (page-timer) ===== -->
+<div class="page" id="page-timer">
+    <div class="container">
+        <div class="timer-section">
+            <!-- 无任务状态 -->
+            <div class="no-task-state" id="noTaskState">
+                <div class="icon">🍅</div>
+                <h2>还没有学习任务</h2>
+                <p>先去生成一个学习任务，然后回来开始专注吧</p>
+                <button class="btn-primary" onclick="navigateTo('task')">📋 去生成任务</button>
+            </div>
+
+            <!-- 番茄钟内容 -->
+            <div id="timerContent" style="display:none;">
+                <h2 class="section-title" style="margin-bottom:36px;">专注一下，树苗正在等你 🌱</h2>
+                <div class="timer-layout">
+                    <div class="timer-task-card">
+                        <h3>当前任务</h3>
+                        <div class="task-title" id="timerTaskTitle">-</div>
+                        <div class="reward" id="timerReward">🌱 完成后可获得：小树苗 x1</div>
+                    </div>
+                    <div class="timer-center">
+                        <h2>倒计时</h2>
+                        <div class="timer-display">
+                            <div class="timer-circle" id="timerCircle">
+                                <div class="timer-time" id="timerTime">25:00</div>
+                            </div>
+                        </div>
+                        <div class="timer-controls">
+                            <button class="btn-primary" id="btnStart" onclick="startCountdown()">▶ 开始</button>
+                            <button class="btn-secondary" id="btnPause" onclick="pauseCountdown()" style="display:none;">⏸ 暂停</button>
+                            <button class="btn-secondary" id="btnResume" onclick="resumeCountdown()" style="display:none;">▶ 继续</button>
+                            <button class="btn-danger" id="btnGiveUp" onclick="giveUp()">✕ 放弃</button>
+                        </div>
+                    </div>
+                    <div class="timer-tips">
+                        <h3>温馨提醒</h3>
+                        <div class="tip-item">💬 这段时间不用完美，只需要完成当前任务就好。</div>
+                        <div class="tip-item">📱 把手机放远一点，你只需要坚持到倒计时结束。</div>
+                        <div class="tip-item">🌿 完成后你会种下一棵树，加油！</div>
+                        <div class="tip-item">💪 如果状态很差，完成一半也比完全不开始好。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>今天学什么？ —— 让每一次专注都有痕迹 🌱</footer>
+</div>
+
+<!-- ===== 森林页 (page-forest) ===== -->
+<div class="page" id="page-forest">
+    <div class="container">
+        <div class="forest-section">
+            <h2 class="section-title">我的学习森林 🌳</h2>
+            <p class="section-subtitle">每一棵树，都是你完成过的一次专注</p>
+
+            <!-- 统计卡片 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🌱</div>
+                    <div class="stat-value" id="statToday">0</div>
+                    <div class="stat-label">今日种树</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-value" id="statWeek">0</div>
+                    <div class="stat-label">本周种树</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏱️</div>
+                    <div class="stat-value" id="statTime">0</div>
+                    <div class="stat-label">总专注（分钟）</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-value" id="statStreak">0</div>
+                    <div class="stat-label">连续学习（天）</div>
+                </div>
+            </div>
+
+            <!-- 复习提醒模块 -->
+            <div class="review-section" id="reviewSection">
+                <div class="review-header">
+                    <h3>📖 今日复习提醒</h3>
+                    <span class="review-badge" id="reviewBadge">0</span>
+                </div>
+                <div class="review-subtitle">基于艾宾浩斯遗忘曲线，及时复习巩固记忆</div>
+                <div id="reviewList">
+                    <!-- 复习项目列表 -->
+                </div>
+                <div class="review-empty" id="reviewEmpty" style="display:none;">
+                    🎉 今天没有需要复习的内容
+                </div>
+                <!-- 遗忘曲线可视化 -->
+                <div class="forgetting-curve-wrap">
+                    <div class="curve-title">艾宾浩斯遗忘曲线示意</div>
+                    <svg width="280" height="120" viewBox="0 0 280 120" style="display:inline-block;">
+                        <!-- 背景网格 -->
+                        <line x1="40" y1="10" x2="40" y2="100" stroke="#E0E0E0" stroke-width="0.5"/>
+                        <line x1="40" y1="100" x2="270" y2="100" stroke="#E0E0E0" stroke-width="0.5"/>
+                        <line x1="40" y1="55" x2="270" y2="55" stroke="#E0E0E0" stroke-width="0.5" stroke-dasharray="3,3"/>
+                        <line x1="40" y1="30" x2="270" y2="30" stroke="#E0E0E0" stroke-width="0.5" stroke-dasharray="3,3"/>
+                        <!-- Y轴标签 -->
+                        <text x="36" y="103" font-size="8" fill="#B2BEC3" text-anchor="end">0%</text>
+                        <text x="36" y="58" font-size="8" fill="#B2BEC3" text-anchor="end">50%</text>
+                        <text x="36" y="33" font-size="8" fill="#B2BEC3" text-anchor="end">100%</text>
+                        <!-- X轴标签 -->
+                        <text x="40" y="112" font-size="7" fill="#B2BEC3" text-anchor="middle">学习</text>
+                        <text x="100" y="112" font-size="7" fill="#B2BEC3" text-anchor="middle">1天</text>
+                        <text x="145" y="112" font-size="7" fill="#B2BEC3" text-anchor="middle">2天</text>
+                        <text x="195" y="112" font-size="7" fill="#B2BEC3" text-anchor="middle">4天</text>
+                        <text x="240" y="112" font-size="7" fill="#B2BEC3" text-anchor="middle">7天</text>
+                        <text x="268" y="112" font-size="7" fill="#B2BEC3" text-anchor="middle">15天</text>
+                        <!-- 遗忘曲线（红色下降） -->
+                        <path d="M40,10 C60,30 80,60 100,72 S140,88 170,92 S220,96 268,97" fill="none" stroke="#EF5350" stroke-width="2" stroke-linecap="round"/>
+                        <!-- 复习节点（绿色上升点） -->
+                        <circle cx="100" cy="72" r="4" fill="#4CAF50" stroke="#fff" stroke-width="1.5"/>
+                        <circle cx="145" cy="82" r="4" fill="#66BB6A" stroke="#fff" stroke-width="1.5"/>
+                        <circle cx="195" cy="89" r="4" fill="#81C784" stroke="#fff" stroke-width="1.5"/>
+                        <circle cx="240" cy="93" r="4" fill="#A5D6A7" stroke="#fff" stroke-width="1.5"/>
+                        <circle cx="268" cy="95" r="4" fill="#C8E6C9" stroke="#fff" stroke-width="1.5"/>
+                        <!-- 图例 -->
+                        <line x1="55" y1="18" x2="75" y2="18" stroke="#EF5350" stroke-width="2"/>
+                        <text x="78" y="21" font-size="8" fill="#636E72">遗忘曲线</text>
+                        <circle cx="65" cy="28" r="3" fill="#4CAF50"/>
+                        <text x="78" y="31" font-size="8" fill="#636E72">复习节点</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- 格子田森林展示区 -->
+            <div class="forest-area">
+                <h3>🌳 我的森林</h3>
+                <div class="subtitle" id="forestLevelText">开始你的第一次专注，种下第一棵树吧！</div>
+                <div class="farm-grid" id="farmGrid">
+                    <!-- 格子田动态渲染 -->
+                </div>
+                <!-- 兼容旧版：隐藏emoji展示 -->
+                <div class="forest-trees" id="forestTrees">
+                    <div class="tree-empty">🌱 还没有树木，快去完成你的第一个学习任务吧！</div>
+                </div>
+                <div class="forest-level" id="forestLevel">
+                    <div class="level-icon">🏁</div>
+                    <div class="level-text" id="forestLevelDesc">当前等级：等待第一棵树</div>
+                </div>
+            </div>
+
+            <!-- 历史任务记录 -->
+            <div class="history-section">
+                <h3>📜 学习记录</h3>
+                <div id="historyContent">
+                    <div class="empty-history">还没有学习记录，快去开始第一次专注吧！</div>
+                </div>
+            </div>
+
+            <!-- 鼓励语 -->
+            <div class="encourage-bar">
+                <p id="encourageText">🌱 学习不是突然变强，而是每天多长出一点点。</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>今天学什么？ —— 让每一次专注都有痕迹 🌱</footer>
+</div>
+
+<!-- ===== 关于项目页 (page-about) ===== -->
+<div class="page" id="page-about">
+    <div class="container">
+        <div class="about-section">
+            <h2 class="section-title">关于这个项目</h2>
+            <p class="section-subtitle">用创新方法解决大学生学习困境</p>
+
+            <div class="about-card">
+                <h2>🎯 项目背景</h2>
+                <p>大学生学习中常见拖延、复习启动困难、专注不足、缺乏反馈等问题。本项目希望通过<strong>游戏化激励</strong>和<strong>微任务机制</strong>，帮助学生降低学习门槛，从一个小任务开始，逐步积累学习成就感。</p>
+            </div>
+
+            <div class="about-card">
+                <h2>💡 创新方法</h2>
+                <ul>
+                    <li><strong>头脑风暴法：</strong>收集大学生学习痛点，找到核心问题</li>
+                    <li><strong>列举法：</strong>列举拖延原因并对应解决方案</li>
+                    <li><strong>流程优化法：</strong>优化"想学 → 开始 → 坚持 → 反馈"的学习流程</li>
+                    <li><strong>游戏化设计：</strong>将学习成果转化为森林成长，增强成就感</li>
+                </ul>
+            </div>
+
+            <div class="about-card">
+                <h2>✨ 项目创新点</h2>
+                <div class="innovation-grid">
+                    <div class="innovation-item">
+                        <div class="icon">🎲</div>
+                        <div>
+                            <h4>微任务降低启动难度</h4>
+                            <p>根据状态和时间随机生成可执行的小任务</p>
+                        </div>
+                    </div>
+                    <div class="innovation-item">
+                        <div class="icon">🍅</div>
+                        <div>
+                            <h4>番茄钟增强专注</h4>
+                            <p>5/15/25/50分钟可选，灵活适应不同状态</p>
+                        </div>
+                    </div>
+                    <div class="innovation-item">
+                        <div class="icon">🌳</div>
+                        <div>
+                            <h4>种树机制可视化成果</h4>
+                            <p>每次专注种一棵树，最终形成自己的学习森林</p>
+                        </div>
+                    </div>
+                    <div class="innovation-item">
+                        <div class="icon">💝</div>
+                        <div>
+                            <h4>温和提醒避免焦虑</h4>
+                            <p>放弃时提供5分钟轻启动选项，降低心理负担</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-card">
+                <h2>🚀 未来优化方向</h2>
+                <ul>
+                    <li>增加更多任务模板和个性化推荐算法</li>
+                    <li>添加学习统计图表和数据分析功能</li>
+                    <li>支持多人学习森林，增强社交互动</li>
+                    <li>开发移动端App，提升使用便捷性</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <footer>今天学什么？ —— 让每一次专注都有痕迹 🌱</footer>
+</div>
+
+<!-- ===== 弹窗系统 ===== -->
+
+<!-- 完成弹窗 -->
+<div class="modal-overlay" id="modalComplete">
+    <div class="modal">
+        <div class="modal-emoji">🎉</div>
+        <h2>恭喜你完成一次专注！</h2>
+        <p>你种下了一棵新的学习树，你的森林又多了一点绿色。</p>
+        <div class="modal-actions">
+            <button class="btn-primary" onclick="plantTree()">🌳 种下小树</button>
+            <button class="btn-secondary" onclick="anotherPomodoro()">🍅 再来一个番茄</button>
+            <button class="btn-secondary" onclick="goToForest()">🌲 去我的森林</button>
+        </div>
+    </div>
+</div>
+
+<!-- 放弃弹窗 -->
+<div class="modal-overlay" id="modalGiveUp">
+    <div class="modal">
+        <div class="modal-emoji">🌤️</div>
+        <h2>没关系，今天可能只是状态不好</h2>
+        <p>要不要换成一个5分钟轻启动任务？</p>
+        <div class="modal-actions">
+            <button class="btn-primary" onclick="switchToEasyTask()">⏰ 换成5分钟任务</button>
+            <button class="btn-secondary" onclick="closeModal('modalGiveUp')">😌 稍后再学</button>
+        </div>
+    </div>
+</div>
+
+<!-- 种树弹窗 -->
+<div class="modal-overlay" id="modalPlantTree">
+    <div class="modal">
+        <div class="modal-emoji tree-grow-animation" id="plantTreeEmoji">🌳</div>
+        <h2>种树成功！</h2>
+        <p id="plantTreeText">你获得了一棵新的学习树！</p>
+        <div class="modal-actions">
+            <button class="btn-primary" onclick="closeModal('modalPlantTree'); navigateTo('forest');">🌲 查看我的森林</button>
+            <button class="btn-secondary" onclick="closeModal('modalPlantTree')">🏠 回到首页</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== JavaScript 功能代码 ===== -->
+<script>
+    /* ===== 全局变量 ===== */
+    let currentTask = null;
+    let timerInterval = null;
+    let remainingSeconds = 0;
+    let isTimerRunning = false;
+    let isPaused = false;
+    let useAIMode = true; // 默认使用AI模式（有API Key时）
+
+    // 树种映射
+    const treeMap = {
+        '背诵': '🪷',     // 荷花
+        '刷题': '🌲',     // 松树
+        '看书/PPT': '🌱',  // 小树苗
+        '整理笔记': '🌸',  // 樱花
+        '复盘错题': '🌳',  // 橡树
+    };
+
+    // SVG树木映射（格子田用）
+    const treeSvgMap = {
+        '看书/PPT': `<svg viewBox="0 0 60 70" width="50" height="58">
+            <ellipse cx="30" cy="65" rx="18" ry="4" fill="#8B6914"/>
+            <line x1="30" y1="40" x2="30" y2="62" stroke="#4A7C2E" stroke-width="3" stroke-linecap="round"/>
+            <ellipse cx="24" cy="32" rx="10" ry="8" fill="#7CB342" transform="rotate(-20 24 32)"/>
+            <ellipse cx="36" cy="28" rx="10" ry="8" fill="#8BC34A" transform="rotate(15 36 28)"/>
+            <ellipse cx="30" cy="22" rx="8" ry="7" fill="#9CCC65"/>
+        </svg>`,
+        '刷题': `<svg viewBox="0 0 60 70" width="50" height="58">
+            <ellipse cx="30" cy="65" rx="18" ry="4" fill="#8B6914"/>
+            <rect x="27" y="50" width="6" height="15" fill="#5D4037" rx="1"/>
+            <polygon points="30,8 14,38 46,38" fill="#2E7D32"/>
+            <polygon points="30,18 16,45 44,45" fill="#388E3C"/>
+            <polygon points="30,28 18,52 42,52" fill="#43A047"/>
+        </svg>`,
+        '整理笔记': `<svg viewBox="0 0 60 70" width="50" height="58">
+            <ellipse cx="30" cy="65" rx="18" ry="4" fill="#8B6914"/>
+            <path d="M30,62 Q28,45 22,35" stroke="#5D4037" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <path d="M30,62 Q35,50 40,38" stroke="#5D4037" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <circle cx="20" cy="30" r="8" fill="#F48FB1" opacity="0.9"/>
+            <circle cx="32" cy="25" r="10" fill="#F06292" opacity="0.85"/>
+            <circle cx="42" cy="32" r="7" fill="#F48FB1" opacity="0.8"/>
+            <circle cx="25" cy="20" r="5" fill="#FCE4EC" opacity="0.7"/>
+            <circle cx="38" cy="22" r="4" fill="#FCE4EC" opacity="0.7"/>
+        </svg>`,
+        '复盘错题': `<svg viewBox="0 0 60 70" width="50" height="58">
+            <ellipse cx="30" cy="65" rx="18" ry="4" fill="#8B6914"/>
+            <rect x="27" y="45" width="6" height="18" fill="#5D4037" rx="1"/>
+            <circle cx="22" cy="32" r="10" fill="#558B2F"/>
+            <circle cx="38" cy="32" r="10" fill="#689F38"/>
+            <circle cx="30" cy="25" r="10" fill="#7CB342"/>
+            <circle cx="30" cy="33" r="8" fill="#558B2F"/>
+        </svg>`,
+        '背诵': `<svg viewBox="0 0 60 70" width="50" height="58">
+            <ellipse cx="30" cy="55" rx="25" ry="8" fill="#4FC3F7" opacity="0.3"/>
+            <ellipse cx="30" cy="55" rx="22" ry="6" fill="#29B6F6" opacity="0.2"/>
+            <path d="M30,55 Q30,40 30,30" stroke="#4CAF50" stroke-width="2.5" fill="none"/>
+            <ellipse cx="18" cy="52" rx="10" ry="6" fill="#66BB6A" transform="rotate(-15 18 52)"/>
+            <ellipse cx="30" cy="22" rx="5" ry="10" fill="#F48FB1"/>
+            <ellipse cx="24" cy="24" rx="4" ry="8" fill="#F06292" transform="rotate(-25 24 24)"/>
+            <ellipse cx="36" cy="24" rx="4" ry="8" fill="#F06292" transform="rotate(25 36 24)"/>
+            <ellipse cx="27" cy="20" rx="4" ry="8" fill="#FCE4EC" transform="rotate(-10 27 20)" opacity="0.8"/>
+            <ellipse cx="33" cy="20" rx="4" ry="8" fill="#FCE4EC" transform="rotate(10 33 20)" opacity="0.8"/>
+            <circle cx="30" cy="20" r="3" fill="#FFD54F"/>
+        </svg>`
+    };
+
+    // 任务模板数据库
+    const taskTemplates = {
+        // 轻启动任务
+        easy: {
+            '看书/PPT': [
+                { title: '浏览教材目录', steps: ['打开教材或PPT，先看目录和标题', '标出一个你最不熟的知识点', '想一想这个知识点大概讲什么'], difficulty: '轻启动' },
+                { title: '快速浏览标题', steps: ['翻到上次没看懂的地方', '只读一小段（5分钟以内）', '在旁边写一个问号标记'], difficulty: '轻启动' },
+                { title: '写下学习标题', steps: ['把今天要学的内容写成一个标题', '想一想你对这个标题知道什么', '写下一个你最想知道的问题'], difficulty: '轻启动' },
+            ],
+            '背诵': [
+                { title: '快速浏览记忆', steps: ['打开需要背诵的内容', '快速读一遍（不要求记住）', '标记3个最不熟悉的词或概念'], difficulty: '轻启动' },
+                { title: '认识新概念', steps: ['找到3个新的名词或概念', '读一遍它们的定义', '用自己的话解释其中一个'], difficulty: '轻启动' },
+            ],
+            '刷题': [
+                { title: '做一道最简单的题', steps: ['找一道你最有把握的题', '认真做一遍', '检查答案是否正确'], difficulty: '轻启动' },
+                { title: '看一道例题', steps: ['找到一道例题', '先自己想一想怎么做', '再看答案对比'], difficulty: '轻启动' },
+            ],
+            '整理笔记': [
+                { title: '整理桌面笔记', steps: ['找到上次的笔记', '翻到最后一页', '补写一个标题或日期'], difficulty: '轻启动' },
+            ],
+            '复盘错题': [
+                { title: '看一道错题', steps: ['找到一道以前做错的题', '重新读一遍题目', '想一想当时为什么错'], difficulty: '轻启动' },
+            ],
+        },
+        // 标准任务
+        normal: {
+            '看书/PPT': [
+                { title: '精读一节内容', steps: ['打开教材/PPT，选择一个小节', '边读边标记重点句子', '用自己的话写下本节核心观点', '标记1个还没搞懂的问题'], difficulty: '标准' },
+                { title: '概念理解与标注', steps: ['浏览本章PPT标题', '找出3个核心概念', '用自己的话写下其中1个概念的解释'], difficulty: '标准' },
+            ],
+            '背诵': [
+                { title: '背诵核心概念', steps: ['选择3个需要背诵的概念', '每个概念读3遍', '合上书，尝试默写出来', '对照检查并标记错误'], difficulty: '标准' },
+                { title: '关键词记忆法', steps: ['找出今天要背的内容', '提取5个关键词', '用关键词串联记忆全部内容'], difficulty: '标准' },
+            ],
+            '刷题': [
+                { title: '基础题练习', steps: ['完成5道基础题', '记录其中1道不会的题', '查看答案并理解解题过程'], difficulty: '标准' },
+                { title: '分类练习', steps: ['选择一个知识点', '做3道相关题目', '总结这个知识点的常见考法'], difficulty: '标准' },
+            ],
+            '整理笔记': [
+                { title: '整理一页笔记', steps: ['选择一个章节', '整理核心框架和要点', '补充2个重点概念的解释'], difficulty: '标准' },
+                { title: '知识卡片制作', steps: ['选择3个重要知识点', '每个做成一张小卡片', '正面写问题，背面写答案'], difficulty: '标准' },
+            ],
+            '复盘错题': [
+                { title: '错题归纳', steps: ['找出3道以前做错的题', '重新做一遍', '总结错误的共同原因'], difficulty: '标准' },
+            ],
+        },
+        // 挑战任务
+        hard: {
+            '看书/PPT': [
+                { title: '深度阅读与输出', steps: ['完整阅读一个章节', '整理本章知识框架', '补充3个重点概念和2道典型题', '写一段50字的学习总结'], difficulty: '挑战' },
+            ],
+            '背诵': [
+                { title: '全面背诵测试', steps: ['选择一整段需要背诵的内容', '分段背诵，每段读5遍', '全部合上书，尝试完整默写', '对照原文标注错误并重背'], difficulty: '挑战' },
+            ],
+            '刷题': [
+                { title: '计时刷题挑战', steps: ['完成10道题目', '记录每道题用时', '总结错题的共同类型', '整理出2条解题技巧'], difficulty: '挑战' },
+            ],
+            '整理笔记': [
+                { title: '完整章节整理', steps: ['整理一个完整章节框架', '补充所有重点概念', '添加2道典型例题', '用一句话总结本章核心'], difficulty: '挑战' },
+            ],
+            '复盘错题': [
+                { title: '错题深度分析', steps: ['找出5道错题', '每道题写出错误原因', '重新做一遍并验证', '总结3条经验教训'], difficulty: '挑战' },
+            ],
+        }
+    };
+
+    // 艾宾浩斯复习时间表（天数）
+    const reviewSchedule = [1, 2, 4, 7, 15]; // 学习后第1天、2天、4天、7天、15天
+
+    /* ===== 数据持久化 ===== */
+    function loadUserData() {
+        const data = localStorage.getItem('studyForestData');
+        if (data) {
+            const parsed = JSON.parse(data);
+            // 确保reviewItems字段存在（兼容旧数据）
+            if (!parsed.reviewItems) {
+                parsed.reviewItems = [];
+            }
+            return parsed;
+        }
+        return {
+            trees: [],
+            totalTime: 0,
+            streakDays: 0,
+            lastStudyDate: '',
+            reviewItems: []  // 复习项目列表
+        };
+    }
+
+    function saveUserData(data) {
+        localStorage.setItem('studyForestData', JSON.stringify(data));
+    }
+
+    function addTree(task) {
+        const data = loadUserData();
+        const now = new Date();
+        const dateStr = now.toISOString().split('T')[0];
+        const treeEmoji = treeMap[task.taskType] || '🌱';
+
+        const newTree = {
+            date: dateStr,
+            subject: task.subject,
+            taskTitle: task.title,
+            duration: task.duration,
+            treeEmoji: treeEmoji,
+            taskType: task.taskType
+        };
+
+        data.trees.push(newTree);
+        data.totalTime += parseInt(task.duration);
+
+        // 更新连续学习天数
+        if (data.lastStudyDate && data.lastStudyDate !== dateStr) {
+            const lastDate = new Date(data.lastStudyDate);
+            const currentDate = new Date(dateStr);
+            const diffDays = Math.floor((currentDate - lastDate) / (1000 * 60 * 60 * 24));
+            if (diffDays === 1) {
+                data.streakDays++;
+            } else if (diffDays > 1) {
+                data.streakDays = 1;
+            }
+        } else if (!data.lastStudyDate) {
+            data.streakDays = 1;
+        }
+
+        data.lastStudyDate = dateStr;
+
+        // 自动创建复习计划（非复习任务才创建）
+        if (!task.isReview) {
+            const reviewItem = createReviewItem(newTree, data.trees.length - 1);
+            data.reviewItems.push(reviewItem);
+        } else {
+            // 如果是复习任务，更新对应复习项目
+            if (task.reviewItemId) {
+                completeReview(task.reviewItemId, data);
+            }
+        }
+
+        saveUserData(data);
+        return newTree;
+    }
+
+    /* ===== 复习相关功能 ===== */
+
+    // 创建复习项目
+    function createReviewItem(tree, treeIndex) {
+        return {
+            id: 'review_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+            subject: tree.subject,
+            taskTitle: tree.taskTitle,
+            taskType: tree.taskType,
+            originalDate: tree.date,
+            nextReviewDate: getNextReviewDate(1), // 第一次复习：明天
+            reviewCount: 0,
+            maxReviews: 5,
+            treeEmoji: tree.treeEmoji || '🌱'
+        };
+    }
+
+    // 获取下一个复习日期
+    function getNextReviewDate(daysFromNow) {
+        const d = new Date();
+        d.setDate(d.getDate() + daysFromNow);
+        return d.toISOString().split('T')[0];
+    }
+
+    // 在指定日期上加天数
+    function addDays(date, days) {
+        const d = new Date(date);
+        d.setDate(d.getDate() + days);
+        return d;
+    }
+
+    // 完成复习
+    function completeReview(reviewItemId, data) {
+        if (!data) data = loadUserData();
+        const item = data.reviewItems.find(r => r.id === reviewItemId);
+        if (item) {
+            item.reviewCount++;
+            if (item.reviewCount < item.maxReviews) {
+                const nextDays = reviewSchedule[item.reviewCount];
+                item.nextReviewDate = getNextReviewDate(nextDays);
+            } else {
+                // 复习完成，移除
+                data.reviewItems = data.reviewItems.filter(r => r.id !== reviewItemId);
+            }
+            saveUserData(data);
+        }
+    }
+
+    // 跳过本次复习，延后到下一个时间点
+    function skipReview(reviewItemId) {
+        const data = loadUserData();
+        const item = data.reviewItems.find(r => r.id === reviewItemId);
+        if (item) {
+            if (item.reviewCount < item.maxReviews - 1) {
+                // 延后到下一个复习时间点
+                const nextDays = reviewSchedule[item.reviewCount + 1] || 15;
+                item.nextReviewDate = getNextReviewDate(nextDays);
+            } else {
+                // 已经是最后一次了，延后3天
+                item.nextReviewDate = getNextReviewDate(3);
+            }
+            saveUserData(data);
+            updateReviewSection();
+        }
+    }
+
+    // 开始复习：生成复习任务并跳转到番茄钟
+    function startReview(reviewItemId) {
+        const data = loadUserData();
+        const item = data.reviewItems.find(r => r.id === reviewItemId);
+        if (!item) return;
+
+        const reviewTask = generateReviewTask(item);
+        currentTask = reviewTask;
+
+        // 显示任务结果
+        displayTask(reviewTask);
+
+        // 设置复习标记
+        currentTask.reviewItemId = reviewItemId;
+
+        // 跳转到番茄钟
+        navigateTo('timer');
+        updateTimerDisplay();
+    }
+
+    // 生成复习型任务
+    function generateReviewTask(reviewItem) {
+        return {
+            subject: reviewItem.subject,
+            status: '一般',
+            duration: '15',
+            taskType: reviewItem.taskType,
+            title: '复习：' + reviewItem.taskTitle,
+            steps: [
+                '回顾上次学习的内容：' + reviewItem.taskTitle,
+                '尝试用自己的话复述核心知识点',
+                '找出遗忘或不熟练的部分',
+                '针对薄弱点做3分钟的针对性练习'
+            ],
+            difficulty: '复习巩固',
+            isReview: true,
+            reviewItemId: reviewItem.id
+        };
+    }
+
+    // 更新复习提醒区域
+    function updateReviewSection() {
+        const data = loadUserData();
+        const today = new Date().toISOString().split('T')[0];
+        const todayReviews = data.reviewItems.filter(r => r.nextReviewDate <= today);
+
+        const badge = document.getElementById('reviewBadge');
+        const list = document.getElementById('reviewList');
+        const empty = document.getElementById('reviewEmpty');
+
+        badge.textContent = todayReviews.length;
+
+        if (todayReviews.length === 0) {
+            list.innerHTML = '';
+            empty.style.display = 'block';
+            return;
+        }
+
+        empty.style.display = 'none';
+        let html = '';
+        todayReviews.forEach(item => {
+            const progress = (item.reviewCount / item.maxReviews) * 100;
+            const progressColor = item.reviewCount === 0 ? '#FF6B6B' :
+                                  item.reviewCount <= 2 ? '#FFA726' : '#4CAF50';
+
+            html += `
+                <div class="review-item">
+                    <div class="review-item-header">
+                        <span class="subject-tag">📌 ${item.subject}</span>
+                        <span class="task-name">📋 ${item.taskTitle}</span>
+                    </div>
+                    <div class="review-item-info">
+                        <span>📅 原始学习：${item.originalDate}</span>
+                        <span>🔄 第 ${item.reviewCount + 1}/${item.maxReviews} 次复习</span>
+                    </div>
+                    <div class="review-progress">
+                        <div class="review-progress-bar">
+                            <div class="review-progress-fill" style="width:${progress}%;background:${progressColor};"></div>
+                        </div>
+                        <div class="review-progress-label">
+                            <span>已复习 ${item.reviewCount} 次</span>
+                            <span>共 ${item.maxReviews} 次</span>
+                        </div>
+                    </div>
+                    <div class="review-actions">
+                        <button class="review-btn start" onclick="startReview('${item.id}')">📖 开始复习</button>
+                        <button class="review-btn skip" onclick="skipReview('${item.id}')">⏭️ 跳过此次</button>
+                    </div>
+                </div>
+            `;
+        });
+        list.innerHTML = html;
+    }
+
+    /* ===== AI 后端代理 ===== */
+
+    // 后端 API 地址
+    // 本地开发时用 window.location.origin（如 http://localhost:3001）
+    // 部署到 GitHub Pages 后，改为你的 Vercel 后端地址（如 https://xxx.vercel.app）
+    const API_BASE = window.location.origin;
+
+    // 更新AI切换按钮的显示状态
+    async function updateAIToggleState() {
+        const toggleBtn = document.getElementById('aiToggleBtn');
+        try {
+            const res = await fetch(API_BASE + '/api/health');
+            const data = await res.json();
+            if (data.ai === 'ready') {
+                toggleBtn.style.opacity = '1';
+                toggleBtn.title = 'AI 服务已就绪';
+            } else {
+                toggleBtn.style.opacity = '0.5';
+                toggleBtn.title = 'AI 服务未配置';
+            }
+        } catch (e) {
+            toggleBtn.style.opacity = '0.5';
+            toggleBtn.title = '无法连接到服务器';
+        }
+    }
+
+    // 切换AI/本地模式
+    function toggleAIMode() {
+        useAIMode = !useAIMode;
+        const btn = document.getElementById('aiToggleBtn');
+        if (useAIMode) {
+            btn.textContent = '🤖 AI 生成';
+            btn.classList.add('active');
+        } else {
+            btn.textContent = '📚 本地模板';
+            btn.classList.remove('active');
+        }
+    }
+
+    // AI任务生成（通过后端代理）
+    async function generateAITask(subject, status, duration, taskType, difficulty) {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000);
+
+        try {
+            const response = await fetch(API_BASE + '/api/generate-task', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ subject, status, duration, taskType, difficulty }),
+                signal: controller.signal
+            });
+
+            clearTimeout(timeout);
+
+            if (!response.ok) {
+                return null;
+            }
+
+            const data = await response.json();
+            if (data.success && data.task) {
+                return data.task;
+            }
+            return null;
+        } catch (err) {
+            clearTimeout(timeout);
+            return null;
+        }
+    }
+
+    /* ===== 页面切换 ===== */
+    function navigateTo(page) {
+        // 隐藏所有页面
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        // 显示目标页面
+        document.getElementById('page-' + page).classList.add('active');
+
+        // 更新导航栏状态
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.remove('active');
+            if (link.dataset.page === page) {
+                link.classList.add('active');
+            }
+        });
+
+        // 如果是森林页，刷新数据
+        if (page === 'forest') {
+            updateForestPage();
+        }
+
+        // 滚动到顶部
+        window.scrollTo(0, 0);
+    }
+
+    /* ===== 任务表单选择 ===== */
+    document.querySelectorAll('.option-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const key = this.parentElement.dataset.key;
+            this.parentElement.querySelectorAll('.option-btn').forEach(b => {
+                b.classList.remove('selected');
+            });
+            this.classList.add('selected');
+
+            // 处理自定义科目展开
+            if (key === 'subject') {
+                const customInput = document.getElementById('customSubjectInput');
+                if (this.dataset.value === '自定义') {
+                    customInput.classList.add('show');
+                } else {
+                    customInput.classList.remove('show');
+                }
+            }
+
+            // 处理自定义时长展开
+            if (key === 'duration') {
+                const customDuration = document.getElementById('customDurationInput');
+                if (this.dataset.value === '自定义') {
+                    customDuration.classList.add('show');
+                } else {
+                    customDuration.classList.remove('show');
+                }
+            }
+        });
+    });
+
+    /* ===== 快速开始 ===== */
+    function quickStart(status, difficulty, duration) {
+        navigateTo('task');
+
+        // 预设选项（使用 querySelectorAll 代替 querySelector）
+        setTimeout(() => {
+            // 选择状态
+            document.querySelectorAll('[data-key="status"] .option-btn').forEach(btn => {
+                if (btn.dataset.value === status) btn.click();
+            });
+
+            // 选择时间
+            document.querySelectorAll('[data-key="duration"] .option-btn').forEach(btn => {
+                if (btn.dataset.value === duration) btn.click();
+            });
+
+            // 随机选择科目和任务类型
+            const subjects = ['英语', '数学', '专业课', '背诵课'];
+            const taskTypes = ['看书/PPT', '背诵', '刷题', '整理笔记'];
+
+            document.querySelectorAll('[data-key="subject"] .option-btn').forEach(btn => {
+                if (btn.dataset.value === subjects[Math.floor(Math.random() * subjects.length)]) btn.click();
+            });
+
+            document.querySelectorAll('[data-key="taskType"] .option-btn').forEach(btn => {
+                if (btn.dataset.value === taskTypes[Math.floor(Math.random() * taskTypes.length)]) btn.click();
+            });
+        }, 100);
+    }
+
+    /* ===== 获取选择值（支持自定义） ===== */
+    function getSelectedValue(key) {
+        const selected = document.querySelector('[data-key="' + key + '"] .option-btn.selected');
+        if (!selected) return null;
+        const val = selected.dataset.value;
+
+        // 处理自定义科目
+        if (key === 'subject' && val === '自定义') {
+            const customName = document.getElementById('customSubjectName').value.trim();
+            return customName || '自定义科目';
+        }
+
+        // 处理自定义时长
+        if (key === 'duration' && val === '自定义') {
+            const customMin = document.getElementById('customDuration').value;
+            return customMin || '25';
+        }
+
+        return val;
+    }
+
+    /* ===== 任务生成 ===== */
+    async function generateTask() {
+        const formData = {
+            subject: getSelectedValue('subject') || '英语',
+            status: getSelectedValue('status') || '一般',
+            duration: getSelectedValue('duration') || '25',
+            taskType: getSelectedValue('taskType') || '看书/PPT'
+        };
+
+        const difficultyLevel = getDifficultyLevel(formData.status, formData.duration);
+        let isAIGenerated = false;
+        let aiSuggestion = '';
+        let generatedTask = null;
+
+        // 尝试AI生成
+        if (useAIMode) {
+            // AI 通过后端代理调用，无需前端 API Key
+            {
+                // 显示loading
+                const genBtn = document.getElementById('generateBtn');
+                genBtn.textContent = '⏳ AI 正在思考...';
+                genBtn.disabled = true;
+
+                const aiResult = await generateAITask(formData.subject, formData.status, formData.duration, formData.taskType, difficultyLevel);
+
+                genBtn.textContent = '🎲 生成任务';
+                genBtn.disabled = false;
+
+                if (aiResult && aiResult.title && aiResult.steps && aiResult.steps.length > 0) {
+                    generatedTask = {
+                        ...formData,
+                        title: aiResult.title,
+                        steps: aiResult.steps,
+                        difficulty: aiResult.difficulty || difficultyLevel,
+                        isAIGenerated: true
+                    };
+                    isAIGenerated = true;
+                    aiSuggestion = aiResult.suggestion || '';
+                }
+            }
+        }
+
+        // 回退到本地模板
+        if (!generatedTask) {
+            const taskList = taskTemplates[difficultyLevel][formData.taskType];
+            if (!taskList || taskList.length === 0) {
+                alert('当前组合暂无任务模板，请选择其他选项');
+                return;
+            }
+            const randomTask = taskList[Math.floor(Math.random() * taskList.length)];
+            generatedTask = {
+                ...formData,
+                ...randomTask,
+                difficulty: difficultyLevel,
+                isAIGenerated: false
+            };
+        }
+
+        currentTask = generatedTask;
+        displayTask(currentTask, isAIGenerated, aiSuggestion);
+    }
+
+    function getDifficultyLevel(status, duration) {
+        const dur = parseInt(duration) || 25;
+        if (status === '完全不想学' || dur <= 5) {
+            return 'easy';
+        } else if (status === '焦虑' || dur <= 15) {
+            return Math.random() > 0.5 ? 'easy' : 'normal';
+        } else if (status === '一般' || dur <= 25) {
+            return 'normal';
+        } else if (status === '状态很好' || dur >= 50) {
+            return Math.random() > 0.5 ? 'normal' : 'hard';
+        }
+        return 'normal';
+    }
+
+    function displayTask(task, isAIGenerated, aiSuggestion) {
+        document.getElementById('taskTitle').textContent = task.title;
+
+        // 更新来源标签
+        const sourceTag = document.getElementById('taskSourceTag');
+        const suggestionEl = document.getElementById('aiSuggestion');
+
+        if (isAIGenerated) {
+            sourceTag.className = 'task-source-tag ai';
+            sourceTag.textContent = '🤖 AI 生成';
+            if (aiSuggestion) {
+                suggestionEl.textContent = '💡 AI 建议：' + aiSuggestion;
+                suggestionEl.style.display = 'block';
+            } else {
+                suggestionEl.style.display = 'none';
+            }
+        } else {
+            sourceTag.className = 'task-source-tag local';
+            sourceTag.textContent = '📚 智能推荐';
+            suggestionEl.style.display = 'none';
+        }
+
+        const stepsContainer = document.getElementById('taskSteps');
+        stepsContainer.innerHTML = '';
+        task.steps.forEach(step => {
+            const li = document.createElement('li');
+            li.textContent = step;
+            stepsContainer.appendChild(li);
+        });
+
+        // 显示难度
+        let diffText = task.difficulty;
+        if (typeof diffText === 'string' && diffText !== 'easy' && diffText !== 'normal' && diffText !== 'hard') {
+            // AI返回的自定义难度，直接使用
+        } else {
+            const diffMap = { easy: '轻启动', normal: '标准', hard: '挑战' };
+            diffText = diffMap[diffText] || diffText;
+        }
+        document.getElementById('taskDifficulty').textContent = diffText;
+        document.getElementById('taskDuration').textContent = task.duration + ' 分钟';
+
+        const treeEmoji = treeMap[task.taskType] || '🌱';
+        document.getElementById('taskReward').textContent = treeEmoji + ' x1';
+
+        document.getElementById('taskResult').classList.add('show');
+        document.getElementById('taskResult').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    /* ===== 简化任务 ===== */
+    async function simplifyTask() {
+        if (!currentTask) return;
+
+        const btn = document.querySelector('.task-actions .btn-secondary');
+        const originalText = btn.textContent;
+        btn.textContent = '⏳ 正在生成新任务...';
+        btn.disabled = true;
+
+        // 如果当前任务是 AI 生成的，继续用 AI 生成新任务
+        if (currentTask.isAIGenerated && useAIMode) {
+            const aiResult = await generateAITask(
+                currentTask.subject,
+                '一般',
+                '15',
+                currentTask.taskType,
+                'easy'
+            );
+            if (aiResult && aiResult.title && aiResult.steps && aiResult.steps.length > 0) {
+                currentTask = {
+                    ...currentTask,
+                    title: aiResult.title,
+                    steps: aiResult.steps,
+                    difficulty: aiResult.difficulty || '轻启动',
+                    duration: '15',
+                    isAIGenerated: true
+                };
+                displayTask(currentTask, true, aiResult.suggestion || '');
+                btn.textContent = originalText;
+                btn.disabled = false;
+                return;
+            }
+        }
+
+        // 回退到本地 easy 模板
+        const easyTasks = taskTemplates.easy[currentTask.taskType];
+        if (easyTasks && easyTasks.length > 0) {
+            currentTask = {
+                ...currentTask,
+                ...easyTasks[Math.floor(Math.random() * easyTasks.length)],
+                difficulty: 'easy',
+                duration: '15',
+                isAIGenerated: currentTask.isAIGenerated  // 保持来源标记
+            };
+            displayTask(currentTask, currentTask.isAIGenerated, '');
+        }
+
+        btn.textContent = originalText;
+        btn.disabled = false;
+    }
+
+    /* ===== 番茄钟 ===== */
+    function startTimer() {
+        if (!currentTask) {
+            alert('请先生成任务');
+            navigateTo('task');
+            return;
+        }
+
+        navigateTo('timer');
+        updateTimerDisplay();
+    }
+
+    function updateTimerDisplay() {
+        if (!currentTask) {
+            document.getElementById('noTaskState').style.display = 'block';
+            document.getElementById('timerContent').style.display = 'none';
+            return;
+        }
+
+        document.getElementById('noTaskState').style.display = 'none';
+        document.getElementById('timerContent').style.display = 'block';
+
+        document.getElementById('timerTaskTitle').textContent = currentTask.title;
+        const treeEmoji = treeMap[currentTask.taskType] || '🌱';
+        document.getElementById('timerReward').textContent = '🌱 完成后可获得：' + treeEmoji + ' x1';
+
+        remainingSeconds = parseInt(currentTask.duration) * 60;
+        updateTimerTimeDisplay();
+    }
+
+    function updateTimerTimeDisplay() {
+        const minutes = Math.floor(remainingSeconds / 60);
+        const seconds = remainingSeconds % 60;
+        const timeStr = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+        document.getElementById('timerTime').textContent = timeStr;
+    }
+
+    function startCountdown() {
+        if (isTimerRunning || remainingSeconds <= 0) return;
+
+        isTimerRunning = true;
+        isPaused = false;
+
+        document.getElementById('btnStart').style.display = 'none';
+        document.getElementById('btnPause').style.display = 'inline-flex';
+        document.getElementById('timerCircle').classList.add('running');
+
+        timerInterval = setInterval(() => {
+            if (remainingSeconds > 0) {
+                remainingSeconds--;
+                updateTimerTimeDisplay();
+            } else {
+                completeTimer();
+            }
+        }, 1000);
+    }
+
+    function pauseCountdown() {
+        if (!isTimerRunning) return;
+
+        isTimerRunning = false;
+        isPaused = true;
+        clearInterval(timerInterval);
+
+        document.getElementById('btnPause').style.display = 'none';
+        document.getElementById('btnResume').style.display = 'inline-flex';
+        document.getElementById('timerCircle').classList.remove('running');
+    }
+
+    function resumeCountdown() {
+        if (!isPaused) return;
+        startCountdown();
+        document.getElementById('btnResume').style.display = 'none';
+    }
+
+    function giveUp() {
+        if (!isTimerRunning && !isPaused) {
+            navigateTo('task');
+            return;
+        }
+
+        isTimerRunning = false;
+        isPaused = false;
+        clearInterval(timerInterval);
+
+        document.getElementById('btnStart').style.display = 'inline-flex';
+        document.getElementById('btnPause').style.display = 'none';
+        document.getElementById('btnResume').style.display = 'none';
+        document.getElementById('timerCircle').classList.remove('running');
+
+        showModal('modalGiveUp');
+    }
+
+    function completeTimer() {
+        isTimerRunning = false;
+        clearInterval(timerInterval);
+
+        document.getElementById('btnStart').style.display = 'inline-flex';
+        document.getElementById('btnPause').style.display = 'none';
+        document.getElementById('btnResume').style.display = 'none';
+        document.getElementById('timerCircle').classList.remove('running');
+        document.getElementById('timerCircle').classList.add('done');
+
+        showModal('modalComplete');
+    }
+
+    /* ===== 弹窗控制 ===== */
+    function showModal(modalId) {
+        document.getElementById(modalId).classList.add('show');
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('show');
+    }
+
+    /* ===== 弹窗操作 ===== */
+    function plantTree() {
+        if (!currentTask) return;
+
+        closeModal('modalComplete');
+
+        const tree = addTree(currentTask);
+        const treeEmoji = tree.treeEmoji;
+
+        document.getElementById('plantTreeEmoji').textContent = treeEmoji;
+        document.getElementById('plantTreeText').textContent = '你获得了一棵新的' + treeEmoji + '学习树！';
+
+        // 重置定时器样式
+        document.getElementById('timerCircle').classList.remove('done');
+
+        showModal('modalPlantTree');
+    }
+
+    function anotherPomodoro() {
+        closeModal('modalComplete');
+        document.getElementById('timerCircle').classList.remove('done');
+
+        // 重置倒计时
+        remainingSeconds = parseInt(currentTask.duration) * 60;
+        updateTimerTimeDisplay();
+    }
+
+    function goToForest() {
+        closeModal('modalComplete');
+        document.getElementById('timerCircle').classList.remove('done');
+        navigateTo('forest');
+    }
+
+    function switchToEasyTask() {
+        closeModal('modalGiveUp');
+
+        // 切换到5分钟简单任务
+        currentTask.duration = '5';
+        currentTask.difficulty = 'easy';
+
+        const easyTasks = taskTemplates.easy[currentTask.taskType];
+        if (easyTasks && easyTasks.length > 0) {
+            const randomTask = easyTasks[Math.floor(Math.random() * easyTasks.length)];
+            currentTask = {
+                ...currentTask,
+                ...randomTask
+            };
+        }
+
+        displayTask(currentTask, false, '');
+        navigateTo('task');
+    }
+
+    /* ===== 森林页面 ===== */
+    function updateForestPage() {
+        const data = loadUserData();
+
+        // 更新统计
+        updateStats(data);
+
+        // 更新格子田森林
+        updateFarmGrid(data);
+
+        // 更新复习提醒
+        updateReviewSection();
+
+        // 更新历史记录
+        updateHistory(data);
+
+        // 更新鼓励语
+        updateEncourageText(data.trees.length);
+    }
+
+    function updateStats(data) {
+        const today = new Date().toISOString().split('T')[0];
+        const todayTrees = data.trees.filter(t => t.date === today).length;
+
+        // 计算本周种树数
+        const now = new Date();
+        const weekStart = new Date(now);
+        weekStart.setDate(now.getDate() - now.getDay());
+        const weekStartStr = weekStart.toISOString().split('T')[0];
+        const weekTrees = data.trees.filter(t => t.date >= weekStartStr).length;
+
+        document.getElementById('statToday').textContent = todayTrees;
+        document.getElementById('statWeek').textContent = weekTrees;
+        document.getElementById('statTime').textContent = data.totalTime;
+        document.getElementById('statStreak').textContent = data.streakDays;
+    }
+
+    /* ===== 格子田森林渲染 ===== */
+    function updateFarmGrid(data) {
+        const farmGrid = document.getElementById('farmGrid');
+        const trees = data.trees;
+
+        // 计算最少需要多少格子（确保比树多至少一行空的）
+        const treeCount = trees.length;
+        const minCells = Math.max(treeCount + 8, 20); // 至少20个格子，多留8个空位
+
+        let html = '';
+
+        // 渲染所有已种树的格子
+        const recentTrees = trees.slice(-minCells); // 最多显示最近的N棵
+        for (let i = 0; i < minCells; i++) {
+            if (i < recentTrees.length) {
+                const tree = recentTrees[i];
+                const svgHtml = treeSvgMap[tree.taskType] || treeSvgMap['看书/PPT'];
+                const isLatest = (i === recentTrees.length - 1);
+                html += `
+                    <div class="farm-cell ${isLatest ? 'just-planted' : ''}">
+                        ${svgHtml}
+                        <div class="tooltip">
+                            ${tree.subject} - ${tree.taskTitle}<br>
+                            <small>${tree.date} | ${tree.duration}分钟</small>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // 空格子
+                html += `
+                    <div class="farm-cell empty">
+                        <div class="tooltip">等待种植...</div>
+                    </div>
+                `;
+            }
+        }
+
+        farmGrid.innerHTML = html;
+
+        // 更新森林等级和副标题
+        if (trees.length === 0) {
+            document.getElementById('forestLevelText').textContent = '开始你的第一次专注，种下第一棵树吧！';
+            document.getElementById('forestLevelDesc').textContent = '当前等级：等待第一棵树';
+            document.getElementById('forestLevel').style.display = 'none';
+        } else {
+            document.getElementById('forestLevel').style.display = 'flex';
+            updateForestLevel(trees.length);
+        }
+    }
+
+    function updateForestLevel(treeCount) {
+        let levelText = '';
+        let levelIcon = '';
+        let subtitleText = '';
+
+        if (treeCount === 0) {
+            levelText = '等待第一棵树';
+            levelIcon = '🏁';
+            subtitleText = '开始你的第一次专注，种下第一棵树吧！';
+        } else if (treeCount <= 3) {
+            levelText = '小树苗阶段';
+            levelIcon = '🌱';
+            subtitleText = '你种下了' + treeCount + '棵树，继续加油！';
+        } else if (treeCount <= 10) {
+            levelText = '小树林阶段';
+            levelIcon = '🌲';
+            subtitleText = '你已经种下了' + treeCount + '棵树，森林开始成型了！';
+        } else if (treeCount <= 20) {
+            levelText = '成长森林阶段';
+            levelIcon = '🌳';
+            subtitleText = '你的森林有' + treeCount + '棵树了，真了不起！';
+        } else {
+            levelText = '专注森林阶段';
+            levelIcon = '🏆';
+            subtitleText = '你是专注大师！已经种下了' + treeCount + '棵树！';
+        }
+
+        document.getElementById('forestLevelDesc').textContent = '当前等级：' + levelText;
+        document.getElementById('forestLevelIcon')?.remove();
+        const levelIconElement = document.createElement('div');
+        levelIconElement.className = 'level-icon';
+        levelIconElement.textContent = levelIcon;
+        levelIconElement.id = 'forestLevelIcon';
+        document.getElementById('forestLevel').prepend(levelIconElement);
+
+        document.getElementById('forestLevelText').textContent = subtitleText;
+    }
+
+    function updateHistory(data) {
+        const historyContent = document.getElementById('historyContent');
+
+        if (data.trees.length === 0) {
+            historyContent.innerHTML = '<div class="empty-history">还没有学习记录，快去开始第一次专注吧！</div>';
+            return;
+        }
+
+        // 显示最近10条记录
+        const recentTrees = [...data.trees].reverse().slice(0, 10);
+
+        let tableHTML = `
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>日期</th>
+                        <th>科目</th>
+                        <th>任务</th>
+                        <th>时长</th>
+                        <th>获得</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        recentTrees.forEach(tree => {
+            tableHTML += `
+                <tr>
+                    <td>${tree.date}</td>
+                    <td>${tree.subject}</td>
+                    <td>${tree.taskTitle}</td>
+                    <td>${tree.duration}分钟</td>
+                    <td class="tree-emoji">${tree.treeEmoji}</td>
+                </tr>
+            `;
+        });
+
+        tableHTML += `
+                </tbody>
+            </table>
+        `;
+
+        historyContent.innerHTML = tableHTML;
+    }
+
+    function updateEncourageText(treeCount) {
+        const encourageTexts = [
+            '🌱 学习不是突然变强，而是每天多长出一点点。',
+            '🌿 每一棵树都代表你的专注，森林会慢慢成长。',
+            '💪 坚持的力量很微小，但积累起来很惊人。',
+            '🎯 今天的小任务，是明天大成就的基石。',
+            '🌟 你已经在进步的路上，继续保持吧！',
+            '🔥 连续学习是最宝贵的习惯，加油！',
+            '🏆 每次专注都是对自己的奖赏，你值得！'
+        ];
+
+        const index = Math.min(treeCount, encourageTexts.length - 1);
+        document.getElementById('encourageText').textContent = encourageTexts[index];
+    }
+
+    /* ===== 初始化 ===== */
+    document.addEventListener('DOMContentLoaded', function() {
+        // 加载用户数据
+        loadUserData();
+
+        // 初始化导航栏
+        navigateTo('home');
+
+        // 更新AI切换按钮状态
+        updateAIToggleState();
+    });
+
+    // 点击弹窗外部关闭
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('show');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
