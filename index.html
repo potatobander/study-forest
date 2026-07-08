@@ -1058,7 +1058,7 @@
         .ebbinghaus-trigger .curve-popup {
             display: none;
             position: absolute;
-            bottom: calc(100% + 16px);
+            top: calc(100% + 12px);
             left: 50%;
             transform: translateX(-50%);
             background: var(--card-bg);
@@ -1073,11 +1073,11 @@
         .ebbinghaus-trigger .curve-popup::after {
             content: '';
             position: absolute;
-            top: 100%;
+            bottom: 100%;
             left: 50%;
             transform: translateX(-50%);
             border: 10px solid transparent;
-            border-top-color: var(--card-bg);
+            border-bottom-color: var(--card-bg);
         }
 
         .ebbinghaus-trigger:hover .curve-popup {
