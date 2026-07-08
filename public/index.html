@@ -1034,18 +1034,62 @@
             font-size: 15px;
         }
 
-        /* 遗忘曲线SVG */
+        /* 遗忘曲线SVG - 隐藏区域 */
         .forgetting-curve-wrap {
-            text-align: center;
-            margin-top: 20px;
-            padding-top: 16px;
-            border-top: 1px solid var(--border);
+            display: none;
         }
 
-        .forgetting-curve-wrap .curve-title {
+        /* 艾宾浩斯高亮文字 + 悬浮曲线弹出 */
+        .ebbinghaus-trigger {
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 2px dashed var(--primary-light);
+            transition: var(--transition);
+            position: relative;
+            display: inline-block;
+        }
+
+        .ebbinghaus-trigger:hover {
+            color: var(--primary-dark);
+            border-bottom-color: var(--primary);
+        }
+
+        .ebbinghaus-trigger .curve-popup {
+            display: none;
+            position: absolute;
+            bottom: calc(100% + 12px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            padding: 16px 20px 12px;
+            z-index: 200;
+            width: 320px;
+            pointer-events: none;
+        }
+
+        .ebbinghaus-trigger .curve-popup::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 8px solid transparent;
+            border-top-color: var(--card-bg);
+        }
+
+        .ebbinghaus-trigger:hover .curve-popup {
+            display: block;
+        }
+
+        .curve-popup .popup-title {
             font-size: 13px;
-            color: var(--text-light);
+            font-weight: 600;
+            color: var(--text-primary);
             margin-bottom: 8px;
+            text-align: center;
         }
 
         /* ===== 格子田森林 ===== */
@@ -1839,7 +1883,32 @@
                     <h3>📖 今日复习提醒</h3>
                     <span class="review-badge" id="reviewBadge">0</span>
                 </div>
-                <div class="review-subtitle">基于艾宾浩斯遗忘曲线，及时复习巩固记忆</div>
+                <div class="review-subtitle">基于<span class="ebbinghaus-trigger">艾宾浩斯遗忘曲线<svg class="curve-popup" viewBox="0 0 320 140" width="320" height="140">
+                    <text x="160" y="14" font-size="12" fill="#2D3436" text-anchor="middle" font-weight="600">艾宾浩斯遗忘曲线示意</text>
+                    <line x1="40" y1="20" x2="40" y2="110" stroke="#E0E0E0" stroke-width="0.5"/>
+                    <line x1="40" y1="110" x2="290" y2="110" stroke="#E0E0E0" stroke-width="0.5"/>
+                    <line x1="40" y1="65" x2="290" y2="65" stroke="#E0E0E0" stroke-width="0.5" stroke-dasharray="3,3"/>
+                    <line x1="40" y1="40" x2="290" y2="40" stroke="#E0E0E0" stroke-width="0.5" stroke-dasharray="3,3"/>
+                    <text x="36" y="113" font-size="8" fill="#B2BEC3" text-anchor="end">0%</text>
+                    <text x="36" y="68" font-size="8" fill="#B2BEC3" text-anchor="end">50%</text>
+                    <text x="36" y="43" font-size="8" fill="#B2BEC3" text-anchor="end">100%</text>
+                    <text x="40" y="125" font-size="8" fill="#B2BEC3" text-anchor="middle">学习</text>
+                    <text x="100" y="125" font-size="8" fill="#B2BEC3" text-anchor="middle">1天</text>
+                    <text x="145" y="125" font-size="8" fill="#B2BEC3" text-anchor="middle">2天</text>
+                    <text x="195" y="125" font-size="8" fill="#B2BEC3" text-anchor="middle">4天</text>
+                    <text x="240" y="125" font-size="8" fill="#B2BEC3" text-anchor="middle">7天</text>
+                    <text x="280" y="125" font-size="8" fill="#B2BEC3" text-anchor="middle">15天</text>
+                    <path d="M40,20 C55,35 75,65 100,77 S140,92 170,97 S220,102 280,107" fill="none" stroke="#EF5350" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="100" cy="77" r="4" fill="#4CAF50" stroke="#fff" stroke-width="1.5"/>
+                    <circle cx="145" cy="87" r="4" fill="#66BB6A" stroke="#fff" stroke-width="1.5"/>
+                    <circle cx="195" cy="94" r="4" fill="#81C784" stroke="#fff" stroke-width="1.5"/>
+                    <circle cx="240" cy="99" r="4" fill="#A5D6A7" stroke="#fff" stroke-width="1.5"/>
+                    <circle cx="280" cy="103" r="4" fill="#C8E6C9" stroke="#fff" stroke-width="1.5"/>
+                    <line x1="55" y1="30" x2="75" y2="30" stroke="#EF5350" stroke-width="2"/>
+                    <text x="78" y="33" font-size="9" fill="#636E72">遗忘曲线</text>
+                    <circle cx="65" cy="40" r="3" fill="#4CAF50"/>
+                    <text x="78" y="43" font-size="9" fill="#636E72">复习节点</text>
+                </svg></span>，及时复习巩固记忆</div>
                 <div id="reviewList">
                     <!-- 复习项目列表 -->
                 </div>
